@@ -1,32 +1,24 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
+
+import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
-import {
-  applyMiddleware,
-  compose,
-  legacy_createStore as createStore,
-} from 'redux';
-import thunk from 'redux-thunk';
+
 import { App } from './App';
 import { logger } from './middlewares';
 import { rootReducer } from './reducers/rootReducer';
 
+const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+});
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-const composeAlt = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-const composeEnhancers = composeAlt(applyMiddleware(logger, thunk));
-
-const store = createStore(
-  rootReducer,
-  // enhancers
-  composeEnhancers
-);
-
 root.render(
-  <React.StrictMode>
+  <StrictMode>
     <Provider store={store}>
       <App />
     </Provider>
-  </React.StrictMode>
+  </StrictMode>
 );

@@ -2,31 +2,19 @@ import { Col, Layout, Row, Spin } from 'antd';
 import { useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import './App.css';
-import { getPokemonWithDetails, setLoading } from './actions/action';
-import { getPokemons } from './api/pokemons';
 import { PokemonCard, PokemonList, Searcher } from './components';
+import { fetchPokemonsWithDetails } from './slices/dataSlice';
 import logo from './statics/logo.svg';
-import { getIn } from 'immutable';
 
 function App() {
-  const pokemons = useSelector(
-    (state) => getIn(state, ['data', 'pokemons'], shallowEqual) // always are different refs
-  );
-  const loading = useSelector((state) => getIn(state, ['ui', 'loading']));
+  const pokemons = useSelector(({ data }) => data.pokemons, shallowEqual);
+  const loading = useSelector(({ ui }) => ui.isLoading);
   const dispatch = useDispatch();
 
   const { Header, Content } = Layout;
 
   useEffect(() => {
-    dispatch(setLoading(true));
-
-    const fetchPokemons = async () => {
-      const data = await getPokemons();
-      dispatch(getPokemonWithDetails(data));
-      dispatch(setLoading(false));
-    };
-
-    fetchPokemons();
+    dispatch(fetchPokemonsWithDetails());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

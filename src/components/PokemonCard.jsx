@@ -2,7 +2,7 @@ import { Card } from 'antd';
 import Meta from 'antd/es/card/Meta';
 import { StartButton } from './StartButton';
 import { useDispatch } from 'react-redux';
-import { setFavorite } from '../actions/action';
+import { setFavorite } from '../slices/dataSlice';
 
 function PokemonCardCover({ name, url }) {
   return <img src={url} alt={name} />;
@@ -12,7 +12,7 @@ function PokemonCard({ pokemon: data }) {
   const dispatch = useDispatch();
 
   const handleFavorite = () => {
-    dispatch(setFavorite(data.id));
+    dispatch(setFavorite({ id: data.id }));
   };
 
   return (
@@ -25,7 +25,7 @@ function PokemonCard({ pokemon: data }) {
           title={data.name}
           extra={
             <StartButton
-              isActive={!!data.isFavorite}
+              isActive={!!data?.isFavorite}
               onClick={handleFavorite}
             />
           }
